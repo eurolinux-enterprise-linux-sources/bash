@@ -5,7 +5,7 @@
 Version: %{baseversion}%{patchlevel}
 Name: bash
 Summary: The GNU Bourne Again shell
-Release: 41%{?dist}
+Release: 48%{?dist}
 Group: System Environment/Shells
 License: GPLv3+
 Url: http://www.gnu.org/software/bash
@@ -130,8 +130,29 @@ Patch151: bash-4.2-1250070-ifs-in-temp-env.patch
 #1207803
 Patch152: bash-4.1-loop-bracket-comsub.patch
 
-#1403215
-Patch153: bash-4.4-param-expansion.patch
+#1325753
+Patch153: bash-4.3-fix-terminate_immediately.patch
+
+#1283829
+Patch154: bash-4.2-param-subst-mem-leak.patch
+
+#1325753
+Patch155: bash-sighup.patch
+
+#1359142
+Patch156: bash-4.4-param-expansion.patch
+
+#1377613
+Patch157: bash-4.3-cve-2016-0634.patch
+
+#1379630
+Patch158: bash-4.3-cve-2016-7543.patch
+
+#1396383
+Patch159: bash-cve-2016-9401.patch
+
+#1421926
+Patch160: bash-4.3-read-sigterm.patch
 
 Requires(post): ncurses-libs
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -213,7 +234,14 @@ This package contains documentation files for %{name}.
 %patch150 -p1 -b .comsub
 %patch151 -p1 -b .ifsenv
 %patch152 -p1 -b .combracket
-%patch153 -p1 -b .param-expansion
+%patch153 -p1 -b .fix-terminate_immediately
+%patch154 -p1 -b .param-subst-mem-leak
+%patch155 -p1 -b .sighup
+%patch156 -p1 -b .param-expansion
+%patch157 -p1 -b .cve-2016-0634
+%patch158 -p1 -b .cve-2016-7543
+%patch159 -p1 -b .cve-2016-9401
+%patch160 -p1 -b .read-sigterm
 
 echo %{version} > _distribution
 echo %{release} > _patchlevel
@@ -389,9 +417,37 @@ fi
 #%doc doc/*.ps doc/*.0 doc/*.html doc/article.txt
 
 %changelog
-* Fri Dec 09 2016 Siteshwar Vashisht <svashisht@redhat.com> - 4.1.2-41
-- Avoid crash in parameter expansion while expnading long strings
-  Resolves: #1403215
+* Wed Feb 15 2017 Siteshwar Vashisht <svashisht@redhat.com> - 4.1.2-48
+- Fix signal handling in read builtin
+  Resolves: #1421926
+
+* Mon Dec 12 2016 Siteshwar Vashisht <svashisht@redhat.com> - 4.1.2-47
+- CVE-2016-9401 - Fix crash when '-' is passed as second sign to popd
+  Resolves: #1396383
+
+* Mon Dec 12 2016 Siteshwar Vashisht <svashisht@redhat.com> - 4.1.2-46
+- CVE-2016-7543 - Fix for arbitrary code execution via SHELLOPTS+PS4 variables
+  Resolves: #1379630
+
+* Mon Dec 12 2016 Siteshwar Vashisht <svashisht@redhat.com> - 4.1.2-45
+- CVE-2016-0634 - Fix for arbitrary code execution via malicious hostname
+  Resolves: #1377613
+
+* Fri Dec 09 2016 Siteshwar Vashisht <svashisht@redhat.com> - 4.1.2-44
+- Avoid crash in parameter expansion while expanding long strings
+  Resolves: #1359142
+
+* Fri Dec 02 2016 Siteshwar Vashisht <svashisht@redhat.com> - 4.1.2-43
+- Stop reading input when SIGHUP is received
+  Resolves: #1325753
+
+* Fri Oct 21 2016 Siteshwar Vashisht <svashisht@redhat.com> - 4.1.2-42
+- Bash leaks memory while doing pattern removal in parameter expansion
+  Resolves: #1283829
+
+* Fri Oct 21 2016 Siteshwar Vashisht <svashisht@redhat.com> - 4.1.2-41
+- Fix a race condition in saving bash history on shutdown
+  Resolves: #1325753
 
 * Mon Dec 22 2015 Ondrej Oprala <ooprala@redhat.com> - 4.1.2-40
 - Bash shouldn't ignore bash --debugger without a dbger installed
