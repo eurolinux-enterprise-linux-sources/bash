@@ -6,7 +6,7 @@
 Version: %{baseversion}%{patchleveltag}
 Name: bash
 Summary: The GNU Bourne Again shell
-Release: 28%{?dist}
+Release: 29%{?dist}
 Group: System Environment/Shells
 License: GPLv3+
 Url: http://www.gnu.org/software/bash
@@ -189,6 +189,9 @@ Patch150: bash-4.3-cve-2016-7543.patch
 #1429838
 Patch151: bash-cve-2016-9401.patch
 
+#1473245
+Patch152: bash-4.3-pipefd-leak.patch
+
 BuildRequires: texinfo bison
 BuildRequires: ncurses-devel
 BuildRequires: autoconf, gettext
@@ -318,6 +321,7 @@ This package contains documentation files for %{name}.
 %patch149 -p1 -b .cve-2016-0634
 %patch150 -p1 -b .cve-2016-7543
 %patch151 -p1 -b .cve-2016-9401
+%patch152 -p1 -b .pipefd-leak
 
 echo %{version} > _distribution
 echo %{release} > _patchlevel
@@ -510,6 +514,10 @@ end
 #%doc doc/*.ps doc/*.0 doc/*.html doc/article.txt
 
 %changelog
+* Thu Aug 03 2017 Siteshwar Vashisht <svashisht@redhat.com> - 4.2.46-29
+- Fix a pipe fd leak in process substitution
+  Resolves: #1473245
+
 * Tue Mar 07 2017 Kamil Dudka <kdudka@redhat.com - 4.2.46-28
 - CVE-2016-9401 - Fix crash when '-' is passed as second sign to popd
   Resolves: #1429838
