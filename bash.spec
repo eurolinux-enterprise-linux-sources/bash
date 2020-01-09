@@ -6,7 +6,7 @@
 Version: %{baseversion}%{patchleveltag}
 Name: bash
 Summary: The GNU Bourne Again shell
-Release: 31%{?dist}
+Release: 33%{?dist}
 Group: System Environment/Shells
 License: GPLv3+
 Url: http://www.gnu.org/software/bash
@@ -198,6 +198,12 @@ Patch153: bash-4.3-wshouldquote.patch
 #1495398 - Append '/' while tab completing directory names
 Patch154: bash-4.3-dircomp-append-slash.patch
 
+#1160482 - Add a runtime option to enable history logging to syslog
+Patch155: bash-5.0-syslog-history.patch
+
+#1573901 - RFE: (security) support bracketed paste mode
+Patch156: bash-4.4-bracketed-paste.patch
+
 BuildRequires: texinfo bison
 BuildRequires: ncurses-devel
 BuildRequires: autoconf, gettext
@@ -330,6 +336,8 @@ This package contains documentation files for %{name}.
 %patch152 -p1 -b .pipefd-leak
 %patch153 -p1 -b .wshouldquote
 %patch154 -p1 -b .append-slash
+%patch155 -p1 -b .syslog-history
+%patch156 -p1 -b .bracketed-paste
 
 echo %{version} > _distribution
 echo %{release} > _patchlevel
@@ -341,7 +349,7 @@ autoconf
 # Recycles pids is neccessary. When bash's last fork's pid was X
 # and new fork's pid is also X, bash has to wait for this same pid.
 # Without Recycles pids bash will not wait.
-make "CPPFLAGS=-D_GNU_SOURCE -DRECYCLES_PIDS -DDEFAULT_PATH_VALUE='\"/usr/local/bin:/usr/bin\"' `getconf LFS_CFLAGS`"
+make "CPPFLAGS=-D_GNU_SOURCE -DRECYCLES_PIDS -DDEFAULT_PATH_VALUE='\"/usr/local/bin:/usr/bin\"' `getconf LFS_CFLAGS` -DSYSLOG_HISTORY"
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -522,6 +530,14 @@ end
 #%doc doc/*.ps doc/*.0 doc/*.html doc/article.txt
 
 %changelog
+* Thu Mar 07 2019 Siteshwar Vashisht <svashisht@redhat.com> - 4.2.46-33
+- Add support for bracketed paste mode
+  Resolves: #1573901
+
+* Wed Mar 06 2019 Siteshwar Vashisht <svashisht@redhat.com> - 4.2.46-32
+- Add configuration option for logging bash history to syslog
+  Resolves: #1160482
+
 * Tue May 22 2018 Siteshwar Vashisht <svashisht@redhat.com> - 4.2.46-31
 - Append '/' while tab completing directory names
   Resolves: #1495398

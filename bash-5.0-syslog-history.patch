@@ -1,0 +1,79 @@
+diff --git a/bashhist.c b/bashhist.c
+--- a/bashhist.c
++++ b/bashhist.c
+@@ -702,6 +702,12 @@ check_add_history (line, force)
+ #if defined (SYSLOG_HISTORY)
+ #define SYSLOG_MAXLEN 600
+
++#if defined (SYSLOG_SHOPT)
++int syslog_history = SYSLOG_SHOPT;
++#else
++int syslog_history = 1;
++#endif
++
+ void
+ bash_syslog_history (line)
+      const char *line;
+@@ -782,7 +788,8 @@ bash_add_history (line)
+     really_add_history (line);
+
+ #if defined (SYSLOG_HISTORY)
+-  bash_syslog_history (line);
++  if (syslog_history)
++    bash_syslog_history (line);
+ #endif
+
+   using_history ();
+diff --git a/builtins/shopt.def b/builtins/shopt.def
+--- a/builtins/shopt.def
++++ b/builtins/shopt.def
+@@ -115,6 +115,10 @@ extern char *shell_name;
+ extern int debugging_mode;
+ #endif
+
++#if defined (SYSLOG_HISTORY) && defined (SYSLOG_SHOPT)
++extern int syslog_history;
++#endif
++
+ static void shopt_error __P((char *));
+
+ static int set_shellopts_after_change __P((char *, int));
+@@ -208,6 +212,9 @@ static struct {
+ #endif
+   { "shift_verbose", &print_shift_error, (shopt_set_func_t *)NULL },
+   { "sourcepath", &source_uses_path, (shopt_set_func_t *)NULL },
++#if defined (SYSLOG_HISTORY) && defined (SYSLOG_SHOPT)
++  { "syslog_history", &syslog_history, (shopt_set_func_t *)NULL },
++#endif
+   { "xpg_echo", &xpg_echo, (shopt_set_func_t *)NULL },
+   { (char *)0, (int *)0, (shopt_set_func_t *)NULL }
+ };
+diff --git a/config-top.h b/config-top.h
+--- a/config-top.h
++++ b/config-top.h
+@@ -109,5 +109,12 @@
+ #  define SYSLOG_LEVEL LOG_INFO
+ #endif
+
++/* Define if you want syslogging history to be controllable at runtime via a
++   shell option; if defined, the value is the default for the syslog_history
++   shopt option */
++#if defined (SYSLOG_HISTORY)
++#define SYSLOG_SHOPT 0
++#endif
++
+ /* Define if you want to include code in shell.c to support wordexp(3) */
+ /* #define WORDEXP_OPTION */
+diff --git a/doc/bash.1 b/doc/bash.1
+--- a/doc/bash.1
++++ b/doc/bash.1
+@@ -9224,6 +9224,9 @@ If set, the
+ to find the directory containing the file supplied as an argument.
+ This option is enabled by default.
+ .TP 8
++.B syslog_history
++If set, command history is logged to syslog.
++.TP 8
+ .B xpg_echo
+ If set, the \fBecho\fP builtin expands backslash-escape sequences
+ by default.
