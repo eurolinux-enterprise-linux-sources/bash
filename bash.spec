@@ -5,7 +5,7 @@
 Version: %{baseversion}%{patchlevel}
 Name: bash
 Summary: The GNU Bourne Again shell
-Release: 33%{?dist}.1
+Release: 40%{?dist}
 Group: System Environment/Shells
 License: GPLv3+
 Url: http://www.gnu.org/software/bash
@@ -112,8 +112,23 @@ Patch145: bash-4.1-posix-block-size-for-cf-options.patch
 #1148507
 Patch146: bash-4.1-enable-hyphened-fn-export.patch
 
-#1254165
+#868846
 Patch147: bash-4.1-sighup-deadlock.patch
+
+#1207042
+Patch148: bash-4.2-1207042-double-alloc.patch
+
+#1260568
+Patch149: bash-4.2-1260568-bash-debugger.patch
+
+#1240994
+Patch150: bash-4.2-1240994-case-in-command-subst.patch
+
+#1250070
+Patch151: bash-4.2-1250070-ifs-in-temp-env.patch
+
+#1207803
+Patch152: bash-4.1-loop-bracket-comsub.patch
 
 Requires(post): ncurses-libs
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -190,6 +205,11 @@ This package contains documentation files for %{name}.
 %patch146 -p0 -b .export
 %patch017 -p0 -b .017
 %patch147 -p1 -b .deadlock
+%patch148 -p1 -b .double-alloc
+%patch149 -p1 -b .debugger
+%patch150 -p1 -b .comsub
+%patch151 -p1 -b .ifsenv
+%patch152 -p1 -b .combracket
 
 echo %{version} > _distribution
 echo %{release} > _patchlevel
@@ -365,9 +385,33 @@ fi
 #%doc doc/*.ps doc/*.0 doc/*.html doc/article.txt
 
 %changelog
-* Mon Aug 17 2015 Ondrej Oprala <ooprala@redhat.com> - 4.1.2-33.1
+* Mon Dec 22 2015 Ondrej Oprala <ooprala@redhat.com> - 4.1.2-40
+- Bash shouldn't ignore bash --debugger without a dbger installed
+  Related: #1260568
+
+* Wed Nov 25 2015 Ondrej Oprala <ooprala@redhat.com> - 4.1.2-39
+- Wrong parsing inside for loop and brackets
+  Resolves: #1207803
+
+* Wed Nov 25 2015 Ondrej Oprala <ooprala@redhat.com> - 4.1.2-38
+- IFS incorrectly splitting herestrings
+  Resolves: #1250070
+
+* Tue Nov 24 2015 Ondrej Oprala <ooprala@redhat.com> - 4.1.2-37
+- Case in a for loop in a subshell causes a syntax error
+  Resolves: #1240994
+
+* Mon Nov 23 2015 Ondrej Oprala <ooprala@redhat.com> - 4.1.2-36
+- Bash shouldn't ignore bash --debugger without a dbger installed
+  Resolves: #1260568
+
+* Mon Nov 23 2015 Ondrej Oprala <ooprala@redhat.com> - 4.1.2-35
+- Bash leaks memory when repeatedly doing a pattern-subst
+  Resolves: #1207042
+
+* Mon Aug 17 2015 Ondrej Oprala <ooprala@redhat.com> - 4.1.2-34
 - Bash hangs when a signal is received
-  Resolves: #1254165
+  Resolves: #868846
 
 * Fri Jan 16 2015 Ondrej Oprala <ooprala@redhat.com> - 4.1.2-33
 - Allow importing exported functions with hyphens
