@@ -6,7 +6,7 @@
 Version: %{baseversion}%{patchleveltag}
 Name: bash
 Summary: The GNU Bourne Again shell
-Release: 29%{?dist}
+Release: 30%{?dist}
 Group: System Environment/Shells
 License: GPLv3+
 Url: http://www.gnu.org/software/bash
@@ -192,6 +192,9 @@ Patch151: bash-cve-2016-9401.patch
 #1473245
 Patch152: bash-4.3-pipefd-leak.patch
 
+#1487615 - bash fails to execute commands containing multibyte characters
+Patch153: bash-4.3-wshouldquote.patch
+
 BuildRequires: texinfo bison
 BuildRequires: ncurses-devel
 BuildRequires: autoconf, gettext
@@ -322,6 +325,7 @@ This package contains documentation files for %{name}.
 %patch150 -p1 -b .cve-2016-7543
 %patch151 -p1 -b .cve-2016-9401
 %patch152 -p1 -b .pipefd-leak
+%patch153 -p1 -b .wshouldquote
 
 echo %{version} > _distribution
 echo %{release} > _patchlevel
@@ -514,6 +518,10 @@ end
 #%doc doc/*.ps doc/*.0 doc/*.html doc/article.txt
 
 %changelog
+* Mon Sep 25 2017 Siteshwar Vashisht <svashisht@redhat.com> - 4.2.46-30
+- Check for multibyte characters in commands
+  Resolves: #1487615
+
 * Thu Aug 03 2017 Siteshwar Vashisht <svashisht@redhat.com> - 4.2.46-29
 - Fix a pipe fd leak in process substitution
   Resolves: #1473245
