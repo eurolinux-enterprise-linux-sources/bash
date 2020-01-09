@@ -5,7 +5,7 @@
 Version: %{baseversion}%{patchlevel}
 Name: bash
 Summary: The GNU Bourne Again shell
-Release: 33%{?dist}
+Release: 33%{?dist}.1
 Group: System Environment/Shells
 License: GPLv3+
 Url: http://www.gnu.org/software/bash
@@ -112,6 +112,9 @@ Patch145: bash-4.1-posix-block-size-for-cf-options.patch
 #1148507
 Patch146: bash-4.1-enable-hyphened-fn-export.patch
 
+#1254165
+Patch147: bash-4.1-sighup-deadlock.patch
+
 Requires(post): ncurses-libs
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -186,6 +189,7 @@ This package contains documentation files for %{name}.
 %patch145 -p1 -b .options
 %patch146 -p0 -b .export
 %patch017 -p0 -b .017
+%patch147 -p1 -b .deadlock
 
 echo %{version} > _distribution
 echo %{release} > _patchlevel
@@ -361,6 +365,10 @@ fi
 #%doc doc/*.ps doc/*.0 doc/*.html doc/article.txt
 
 %changelog
+* Mon Aug 17 2015 Ondrej Oprala <ooprala@redhat.com> - 4.1.2-33.1
+- Bash hangs when a signal is received
+  Resolves: #1254165
+
 * Fri Jan 16 2015 Ondrej Oprala <ooprala@redhat.com> - 4.1.2-33
 - Allow importing exported functions with hyphens
   Resolves: #1155455
