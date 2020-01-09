@@ -5,7 +5,7 @@
 Version: %{baseversion}%{patchlevel}
 Name: bash
 Summary: The GNU Bourne Again shell
-Release: 40%{?dist}
+Release: 41%{?dist}
 Group: System Environment/Shells
 License: GPLv3+
 Url: http://www.gnu.org/software/bash
@@ -130,6 +130,9 @@ Patch151: bash-4.2-1250070-ifs-in-temp-env.patch
 #1207803
 Patch152: bash-4.1-loop-bracket-comsub.patch
 
+#1403215
+Patch153: bash-4.4-param-expansion.patch
+
 Requires(post): ncurses-libs
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -210,6 +213,7 @@ This package contains documentation files for %{name}.
 %patch150 -p1 -b .comsub
 %patch151 -p1 -b .ifsenv
 %patch152 -p1 -b .combracket
+%patch153 -p1 -b .param-expansion
 
 echo %{version} > _distribution
 echo %{release} > _patchlevel
@@ -385,6 +389,10 @@ fi
 #%doc doc/*.ps doc/*.0 doc/*.html doc/article.txt
 
 %changelog
+* Fri Dec 09 2016 Siteshwar Vashisht <svashisht@redhat.com> - 4.1.2-41
+- Avoid crash in parameter expansion while expnading long strings
+  Resolves: #1403215
+
 * Mon Dec 22 2015 Ondrej Oprala <ooprala@redhat.com> - 4.1.2-40
 - Bash shouldn't ignore bash --debugger without a dbger installed
   Related: #1260568
