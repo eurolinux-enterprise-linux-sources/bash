@@ -6,7 +6,7 @@
 Version: %{baseversion}%{patchleveltag}
 Name: bash
 Summary: The GNU Bourne Again shell
-Release: 30%{?dist}
+Release: 31%{?dist}
 Group: System Environment/Shells
 License: GPLv3+
 Url: http://www.gnu.org/software/bash
@@ -195,6 +195,9 @@ Patch152: bash-4.3-pipefd-leak.patch
 #1487615 - bash fails to execute commands containing multibyte characters
 Patch153: bash-4.3-wshouldquote.patch
 
+#1495398 - Append '/' while tab completing directory names
+Patch154: bash-4.3-dircomp-append-slash.patch
+
 BuildRequires: texinfo bison
 BuildRequires: ncurses-devel
 BuildRequires: autoconf, gettext
@@ -326,6 +329,7 @@ This package contains documentation files for %{name}.
 %patch151 -p1 -b .cve-2016-9401
 %patch152 -p1 -b .pipefd-leak
 %patch153 -p1 -b .wshouldquote
+%patch154 -p1 -b .append-slash
 
 echo %{version} > _distribution
 echo %{release} > _patchlevel
@@ -518,6 +522,10 @@ end
 #%doc doc/*.ps doc/*.0 doc/*.html doc/article.txt
 
 %changelog
+* Tue May 22 2018 Siteshwar Vashisht <svashisht@redhat.com> - 4.2.46-31
+- Append '/' while tab completing directory names
+  Resolves: #1495398
+
 * Mon Sep 25 2017 Siteshwar Vashisht <svashisht@redhat.com> - 4.2.46-30
 - Check for multibyte characters in commands
   Resolves: #1487615
